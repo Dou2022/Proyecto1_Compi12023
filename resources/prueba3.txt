@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<worlds>
+<world>
+	<name>tatoine<name/>
+	<rows>8<rows/>
+	<cols>8<cols/>
+<config>
+
+	<box_color>#ffff00<box_color/>
+	<box_on_target_color>#fe0002<box_on_target_color/>
+	<target_color>#d6fe0a<target_color/>
+	<brick_color>#bdbebf<brick_color/>
+	<hall_color>#0001ff<hall_color/>
+	<undefined_color>#303030<undefined_color/>
+
+<config/>
+<board>
+	<posX>0<posX/>
+	<posY>0<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>0<posX/>
+	<posY>6<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>0<posX/>
+	<posY>8<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>2<posX/>
+	<posY>6<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>0<posX/>
+	<posY>4<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>6<posX/>
+	<posY>0<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>1<posX/>
+	<posY>1<posY/>
+	<type>HALL<type/>
+
+<board/>
+<board>
+	<posX>1<posX/>
+	<posY>2<posY/>
+	<type>HALL<type/>
+
+<board/>
+<board>
+	<posX>1<posX/>
+	<posY>3<posY/>
+	<type>HALL<type/>
+
+<board/>
+<board>
+	<posX>1<posX/>
+	<posY>4<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>2<posX/>
+	<posY>0<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>2<posX/>
+	<posY>1<posY/>
+	<type>HALL<type/>
+
+<board/>
+<board>
+	<posX>4<posX/>
+	<posY>2<posY/>
+	<type>HALL<type/>
+
+<board/>
+<board>
+	<posX>2<posX/>
+	<posY>3<posY/>
+	<type>HALL<type/>
+
+<board/>
+<board>
+	<posX>2<posX/>
+	<posY>4<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>3<posX/>
+	<posY>0<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>3<posX/>
+	<posY>1<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>3<posX/>
+	<posY>2<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>3<posX/>
+	<posY>3<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<board>
+	<posX>3<posX/>
+	<posY>4<posY/>
+	<type>BRICK<type/>
+
+<board/>
+<boxes>
+	<posX>5<posX/>
+	<posY>5<posY/>
+
+<boxes/>
+<boxes>
+	<posX>2<posX/>
+	<posY>2<posY/>
+
+<boxes/>
+<targets>
+	<posX>6<posX/>
+	<posY>5<posY/>
+
+<targets/>
+<targets>
+	<posX>8<posX/>
+	<posY>2<posY/>
+
+<targets/>
+<player>
+	<posX>4<posX/>
+	<posY>1<posY/>
+
+<player/>
+
+<world/>
+
+<worlds/>

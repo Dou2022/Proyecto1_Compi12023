@@ -1,0 +1,270 @@
+package com.example.proyecto1compi1_2023.lexerAndParser;
+import java_cup.runtime.Symbol;
+
+import com.example.proyecto1compi1_2023.objects.*;
+import java.util.ArrayList;
+import java.util.List;
+
+class WorldParserAndroidXML;
+
+parser code {:
+
+        private Symbol cur_token;
+        private boolean parsed;
+        private List<World> worlds = new ArrayList<World>();
+        private ArrayList<String> worldN = new ArrayList<String>();
+        private World worldd;
+        private Config configg;
+
+	public WorldParserAndroidXML(WorldXmlAndroidLexer lex) {
+        super(lex);
+        // parsed
+        this.parsed = true;
+        System.out.println("--------world XML Constructor---------");
+        this.worldd =  new World();
+        this.configg = new Config();
+
+        // Reporte de errores
+        //this.handleErrors = new HandleError();
+	}
+
+	public void unrecovered_syntax_error(Symbol cur_token) {
+        /* parsed */
+        this.parsed = false;
+        System.out.println("unrecovered_syntax_error");
+        System.out.println("cur_token: " + symbl_name_from_id(cur_token.sym));
+	}
+
+	public void report_error(String message, Object info) {
+        /* parsed */
+        this.parsed = false;
+        /**/
+        System.out.println("report_error");
+        System.out.println("Message: " + message);
+        System.out.println("Object info: " + info);
+	}
+
+	public void report_fatal_error(String message, Object info) {
+        /* parsed */
+        this.parsed = false;
+        System.out.println("report_fatal_error");
+        System.out.println("Message: " + message);
+        System.out.println("Object info: " + info);
+
+        /* Armando reportes de errores */
+        /*
+        List<String> expected = new ArrayList<>();
+        List<Integer> tokens = expected_token_ids();
+        for(Integer i : tokens) {
+                expected.add(symbl_name_from_id(i));
+        }
+        */
+        /* Reporte de errores */
+        //this.handleErrors.setError(cur_token, symbl_name_from_id(cur_token.sym), expected);
+        
+    }
+
+	public void syntax_error(Symbol cur_token) {
+        /* parsed */
+        this.parsed = false;
+
+        /* Symbol que provoca sintax_error */
+        this.cur_token = cur_token;
+
+        /* Armando reportes de errores */
+        /*
+        List<String> expected = new ArrayList<>();
+        List<Integer> tokens = expected_token_ids();
+        for(Integer i : tokens) {
+                expected.add(symbl_name_from_id(i));
+        }
+        */
+        /* Reporte de errores */
+        //this.handleErrors.setError(cur_token, symbl_name_from_id(cur_token.sym), expected);
+	}
+
+	public Symbol getCur_token() {
+                return this.cur_token;
+    }
+
+    protected int error_sync_size() {
+                return 1;
+	}
+
+        /* Reports */
+    public boolean isParsed() {
+            return parsed;
+    }
+    public void setParsed(boolean estado){
+        if(parsed)
+                parsed = estado;
+    }
+    public void startWorld(){
+        System.out.println("--------world XML startWorld---------");
+        worldd.setConfig(configg);
+        worlds.add(worldd);
+        worldd =  new World();
+        configg = new Config();
+    }
+    public List<World> getWorld(){
+        return worlds;
+    }
+     public ArrayList<String> getWorldN(){
+        return worldN;
+    }
+    public void setWorldN(){
+        worldN.clear();
+    }
+
+:}
+/*XML*/
+terminal INICIAL,FINAL,CIERRE;
+/*world*/
+terminal I, WORLD, WORLDS, NAME, ROWS, COLS; 
+/*CONFING opcional del tablero*/
+terminal CONFIG, BOXC, BOXCPOS, BOXCES, BRICKCOLOR, HALLCOLOR, UNDEFINEDCOLOR, PLAYERCOLOR;
+terminal HALL, BRICK;
+terminal String COLOR,  NAMEW;
+/*CONFIG de los materiales del tablero campo, cajas, almacenamiento y jugador*/
+terminal BOARD, POSY, POSX, BOXES, TYPE, TARGETS, PLAYER;
+/*OPERATORS*/
+terminal  ERROR;
+/*NUMERO*/
+terminal Integer ENTERO;
+
+/*no terminal*/
+non terminal peticion, worldss, worlds, world, wd, config, con, colorr, opcion, op;
+non terminal String  box_color, box_on_target_color, target_color, brick_color, hall_color, undefined_color, player_color;
+non terminal board, piece, type, ty;
+non terminal player, target;
+non terminal box;
+non terminal String name, w;
+non terminal Posicion posicion;
+non terminal Integer cols ,rows ,posx ,posy;
+non terminal nivel;
+non terminal worldn, worldns;
+
+peticion ::= nivel
+        | worldss
+        ;
+nivel    ::= I INICIAL WORLDS FINAL worldns CIERRE WORLDS FINAL
+        ;
+worldns ::=  worldns worldn 
+        |       worldn
+        ;
+worldn  ::= INICIAL WORLD FINAL NAMEW:n1 CIERRE WORLD FINAL 
+                {: worlds = null;
+                worldN.add(n1); :}
+        ;
+worldss  ::= I INICIAL WORLDS FINAL worlds
+        ;
+worlds   ::=  world worlds
+        |       world CIERRE WORLDS FINAL
+        ;
+world    ::= INICIAL WORLD FINAL wd opcion CIERRE WORLD FINAL
+                {: startWorld(); :}
+        ;
+wd       ::= wd w
+        | w 
+        ;
+w    ::= name: n1
+        {: worldd.setName(n1); :}
+        | rows: n2
+        {: worldd.setRows(n2); :}
+        | cols: n3
+        {: worldd.setCols(n3); :}
+        ;
+opcion   ::= opcion op
+        | op
+        ;
+op       ::= INICIAL CONFIG FINAL config
+        | INICIAL BOARD FINAL board
+        | INICIAL BOXES FINAL box
+        | INICIAL TARGETS FINAL target
+        | INICIAL PLAYER FINAL player
+        ;
+name     ::= INICIAL NAME FINAL NAMEW:n1 CIERRE NAME FINAL
+                {: RESULT = n1; :}
+        ;
+rows     ::= INICIAL ROWS FINAL ENTERO:n2 CIERRE ROWS FINAL
+                {:System.out.println("--rows--"); 
+                RESULT = n2; :}
+        ;
+cols     ::= INICIAL COLS FINAL ENTERO:n3 CIERRE COLS FINAL
+                {:RESULT = n3; :}
+        ;
+config   ::= con CIERRE CONFIG FINAL
+        ;
+con      ::= con colorr 
+           | colorr
+        ;
+colorr   ::= INICIAL BOXC FINAL box_color:n1
+                {: configg.setBoxColor(n1); :}
+           |  INICIAL BOXCPOS FINAL box_on_target_color:n2 
+                {: configg.setBoxOnTargetColor(n2); :}
+           |  INICIAL BOXCES FINAL target_color:n3
+                {: configg.setTargetColor(n3); :}
+           | INICIAL BRICKCOLOR FINAL brick_color:n4
+                {: configg.setBrickColor(n4); :}
+           | INICIAL HALLCOLOR FINAL hall_color:n5
+                {: configg.setHallColor(n5); :}
+           | INICIAL UNDEFINEDCOLOR FINAL undefined_color:n6
+                {: configg.setUndefinedColor(n6); :}
+           | INICIAL PLAYERCOLOR FINAL player_color:n7
+                {: configg.setPlayerColor(n7); :}
+        ;
+box_color::= COLOR:n7 CIERRE BOXC FINAL
+                {: RESULT = n7; :}
+        ;
+box_on_target_color ::= COLOR:n1 CIERRE BOXCPOS FINAL
+                {: RESULT = n1; :}
+        ;
+target_color ::= COLOR:n2 CIERRE BOXCES FINAL
+                {: RESULT = n2; :}
+        ;
+brick_color  ::= COLOR:n3 CIERRE BRICKCOLOR FINAL
+                {: RESULT = n3; :}
+        ;
+hall_color   ::= COLOR:n4 CIERRE HALLCOLOR FINAL
+                {: RESULT = n4; :}
+        ;
+undefined_color ::= COLOR:n5 CIERRE UNDEFINEDCOLOR FINAL
+                {: RESULT = n5; :}
+        ;
+player_color    ::= COLOR:n6 CIERRE PLAYERCOLOR FINAL
+                {: RESULT = n6; :}
+        ;
+
+board    ::= piece CIERRE BOARD FINAL
+           ;
+piece   ::= posicion:p INICIAL TYPE FINAL type:h1
+                {:  worldd.createPiece( new Piece(p.getPosX(),p.getPosY(),(String)h1) ); :}
+            ;
+type    ::= ty:h1 CIERRE TYPE FINAL
+                {:RESULT = h1; :}
+            ;
+ty      ::= HALL:h1
+                {: RESULT = h1; :}
+          | BRICK:h2
+                {: RESULT = h2; :}
+          ;
+box      ::= posicion:p CIERRE BOXES FINAL
+                {: worldd.createBox(new Box(p.getPosX(),p.getPosY())); :}
+            ;
+target    ::= posicion:p CIERRE TARGETS FINAL
+                {: worldd.createTarget(new Target(p.getPosX(),p.getPosY())); :}
+            ;
+player   ::= posicion:p CIERRE PLAYER FINAL
+                {: worldd.createPlayer(new Player(p.getPosX(),p.getPosY()) ); :}
+           ;
+posicion ::= posx:nx posy:ny
+                {:RESULT = new Posicion(nx,ny); :}
+           | posy:ny posx:nx
+                {:RESULT = new Posicion(nx,ny); :}
+           ;
+posx    ::= INICIAL POSX FINAL ENTERO:nx1 CIERRE POSX FINAL
+                {: RESULT = nx1 ; :}
+            ;
+posy    ::= INICIAL POSY FINAL ENTERO:ny1 CIERRE POSY FINAL
+                {: RESULT = ny1; :}
+            ;

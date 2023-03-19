@@ -1,0 +1,299 @@
+package lexerAndParser;
+import java_cup.runtime.Symbol;
+
+import Objects.*;
+import java.util.ArrayList;
+import java.util.List;
+import control.ValidarControl;
+
+class WorldParser;
+
+parser code {:
+
+        private Symbol cur_token;
+        private boolean parsed;
+        private List<World> worlds = new ArrayList<World>();
+        private World worldd;
+        private Config configg;
+        public ValidarControl control = new ValidarControl();
+        private String solicitudWorlds, selectWorld;
+
+	public WorldParser(WorldLexer lex) {
+                super(lex);
+                // parsed
+                this.parsed = true;
+                System.out.println("--iniciando world--");
+                this.worldd =  new World();
+                this.configg = new Config();
+	}
+
+	public void unrecovered_syntax_error(Symbol cur_token) {
+                /* parsed */
+                this.parsed = false;
+                System.out.println("unrecovered_syntax_error");
+                System.out.println("cur_token: " + symbl_name_from_id(cur_token.sym));
+                control.error(cur_token.value.toString(), cur_token.left, cur_token.right, "report_fatal_error");
+	}
+
+	public void report_error(String message, Object info) {
+                /* parsed */
+                this.parsed = false;
+                /**/
+                System.out.println("report_error");
+                System.out.println("Message: " + message);
+                System.out.println("Object info: " + info);
+                control.error(cur_token.value.toString(), cur_token.left, cur_token.right, "report_fatal_error");
+        }
+
+	public void report_fatal_error(String message, Object info) {
+                /* parsed */
+                this.parsed = false;
+                System.out.println("report_fatal_error");
+                System.out.println("Message: " + message);
+                System.out.println("Object info: " + info);
+                control.error(cur_token.value.toString(), cur_token.left, cur_token.right, "report_fatal_error");
+        }
+
+	public void syntax_error(Symbol cur_token) {
+                /* parsed */
+                this.parsed = false;
+
+                /* Symbol que provoca sintax_error */
+                this.cur_token = cur_token;
+                control.error(cur_token.value.toString(), cur_token.left, cur_token.right, "report_fatal_error");
+        }
+
+	public Symbol getCur_token() {
+                return this.cur_token;
+        }
+
+        protected int error_sync_size() {
+                return 1;
+	}
+
+        /* Reports */
+         public boolean isParsed() {
+            return parsed;
+        }
+        public void setParsed(boolean estado){
+                if(parsed)
+                parsed = estado;
+        }
+        public void startWorld(){
+                worldd.setConfig(configg);
+                worlds.add(worldd);
+                worldd =  new World();
+                configg = new Config();
+        }
+        public String getSolicitudWolds(){
+                return solicitudWorlds;
+        }
+        public List<World> getWorld(){
+                return worlds;
+        }
+        public String getSelectWorld(){
+                return selectWorld;
+        }
+
+:}
+
+/*world*/
+terminal NAME, ROWS, COLS ,ALL; 
+/*CONFING opcional del tablero*/
+terminal CONFIG, BOXC, BOXCPOS, BOXCES, BRICKCOLOR, HALLCOLOR, UNDEFINEDCOLOR, PLAYERCOLOR;
+terminal HALL, BRICK;
+terminal String COLOR, NAMEW;
+/*CONFIG de los materiales del tablero campo, cajas, almacenamiento y jugador*/
+terminal BOARD, POSY, POSX, BOXES, TYPE, TARGETS, PLAYER;
+/*OPERATORS*/
+terminal POINTS, COMMA, LPAREN, RPAREN, PLUS, MINUS, TIMES, DIV, ERROR;
+terminal AP, LCORCH, RCORCH, LKEY, RKEY;
+/*peticion a worlds*/
+terminal WORLDS, WORLD; 
+/*NUMERO*/
+terminal Integer ENTERO;
+
+/*no terminal*/
+non terminal peticion, worlds, world, wd, config, con, colorr, opcion, op;
+non terminal String  box_color, box_on_target_color, target_color, brick_color, hall_color, undefined_color, player_color;
+non terminal board, pieces, piece, type, ty;
+non terminal player, targets, target, tar;
+non terminal boxes, box, b;
+non terminal String name, w;
+non terminal Posicion posicion;
+non terminal Integer cols ,rows ,posx ,posy, s, t, u, e;
+non terminal solicitud, nivel;
+
+peticion ::= solicitud
+        | nivel
+        | worlds
+        ;
+worlds   ::= world worlds
+        |       world
+        ;
+solicitud ::= LKEY AP WORLDS AP POINTS AP ALL AP RKEY
+                {: worlds = null;
+                selectWorld = null;
+                solicitudWorlds = "ALL"; :}
+        ;
+nivel    ::= LKEY AP WORLD AP POINTS AP NAMEW:n1 AP RKEY
+                {: worlds = null;
+                worldd = null;
+                selectWorld = n1; :}
+        ;
+world    ::= LKEY wd COMMA opcion RKEY
+                {: startWorld(); :}
+        ;
+wd       ::= wd COMMA w
+        | w 
+        ;
+w    ::= name: n1
+        {: control.worldConfig(worldd,n1,n1left,n1right,"name"); :}
+        | rows: n2
+        {: control.worldConfig(worldd,n2+"",n2left,n2right,"rows"); :}
+        | cols: n3
+        {: control.worldConfig(worldd,n3+"",n3left,n3right,"cols"); :}
+        ;
+opcion   ::= op COMMA opcion
+        | op
+        ;
+op       ::= config
+        | board
+        | boxes
+        | targets
+        | player
+        ;
+name     ::= AP NAME AP POINTS AP NAMEW:n1 AP
+                {: RESULT = n1; :}
+        ;
+rows     ::= AP ROWS AP POINTS AP s:n2 AP
+                {: RESULT = n2; :}
+        ;
+cols     ::= AP COLS AP POINTS AP s:n3 AP
+                {: RESULT = n3; :}
+        ;
+config   ::= AP CONFIG AP POINTS LKEY con RKEY
+        ;
+con      ::= colorr COMMA con
+           | colorr
+        ;
+colorr   ::= box_color:n1
+                {: control.colorConfig(configg,n1,n1left,n1right,"box_color"); :}
+           | box_on_target_color:n2
+                {: control.colorConfig(configg,n2,n2left,n2right,"box_on_target_color"); :}
+           | target_color:n3
+                {: control.colorConfig(configg,n3,n3left,n3right,"target_color"); :}
+           | brick_color:n4
+                {: control.colorConfig(configg,n4,n4left,n4right,"brick_color"); :}
+           | hall_color:n5
+                {: control.colorConfig(configg,n5,n5left,n5right,"hall_color"); :}
+           | undefined_color:n6
+                {: control.colorConfig(configg,n6,n6left,n6right,"undefined_color"); :}
+           | player_color:n7
+                {: control.colorConfig(configg,n7,n7left,n7right,"player_color"); :}
+        ;
+box_color::= AP BOXC AP POINTS AP COLOR:n7 AP
+                {: RESULT = n7; :}
+        ;
+box_on_target_color ::= AP BOXCPOS AP POINTS AP COLOR:n1 AP
+                {: RESULT = n1; :}
+        ;
+target_color ::= AP BOXCES AP POINTS AP COLOR:n2 AP
+                {: RESULT = n2; :}
+        ;
+brick_color  ::= AP BRICKCOLOR AP POINTS AP COLOR:n3 AP
+                {: RESULT = n3; :}
+        ;
+hall_color   ::= AP HALLCOLOR AP POINTS AP COLOR:n4 AP
+                {: RESULT = n4; :}
+        ;
+undefined_color ::= AP UNDEFINEDCOLOR AP POINTS AP COLOR:n5 AP
+                {: RESULT = n5; :}
+        ;
+player_color    ::= AP PLAYERCOLOR AP POINTS AP COLOR:n6 AP
+                {: RESULT = n6; :}
+        ;
+
+board    ::= AP BOARD AP POINTS LCORCH pieces RCORCH
+                {:System.out.println("--board--"); :}
+           ;
+pieces    ::=  piece COMMA pieces 
+            |  piece
+            ;
+piece   ::= LKEY posicion:p COMMA type:h1 RKEY
+                {: setParsed(control.boardValidar(worldd,new Piece(p.getPosX(),p.getPosY(),(String)h1), pleft, pright));  :}
+            ;
+type    ::= AP TYPE AP POINTS ty:h1
+                {:RESULT = h1; :}
+            ;
+ty      ::= AP HALL:h1 AP
+                {: RESULT = h1; :}
+          | AP BRICK:h2 AP
+                {: RESULT = h2; :}
+          ;    
+boxes    ::= AP BOXES AP POINTS LCORCH box RCORCH
+            ;
+box      ::= b COMMA box
+            | b
+            ;
+b        ::= LKEY posicion:p RKEY
+            {: setParsed(control.boxValidar(worldd ,new Box(p.getPosX(),p.getPosY()) ,pleft ,pright)); :}
+            ;
+targets  ::= AP TARGETS AP POINTS LCORCH target RCORCH
+            ;
+target    ::= tar COMMA target
+            | tar
+            ;
+tar       ::= LKEY posicion:p RKEY
+                {: setParsed(control.targetValidar(worldd,new Target(p.getPosX(),p.getPosY()),pleft,pright)); :}
+            ;
+player   ::= AP PLAYER AP POINTS LKEY posicion:p RKEY
+                {:setParsed(control.playerValidar(worldd, new Player(p.getPosX(),p.getPosY()),pleft,pright)); :}
+           ;
+posicion ::=  posx:nx COMMA posy:ny
+                {:RESULT = new Posicion(nx,ny); :}
+        |     posy:ny COMMA posx:nx
+                {:RESULT = new Posicion(nx,ny); :}
+        |       ERROR:e
+                {: control.error(e.toString(), eleft, eright, "Lex invalido"); :}
+        ;
+posx    ::= AP POSX AP POINTS AP s:nx1 AP
+                {: RESULT = nx1 ; :}
+        |   AP POSX AP POINTS s:nx2
+                {: RESULT = nx2; :}
+            ;
+posy    ::= AP POSY AP POINTS AP s:ny1 AP
+                {: RESULT = ny1; :}
+        |   AP POSY AP POINTS s:ny2
+                {: RESULT = ny2 ; :}
+            ;
+     
+s       ::=      s:n1 PLUS t:n2 
+                {: RESULT = n1 + n2; :}
+                |  s:n1 MINUS t:n2 
+                {: RESULT = n1 - n2; :}
+                | t:n1
+                {: RESULT = n1; :}
+                | error
+                {: System.out.println("s ::= error"); :}
+                ;
+
+t       ::=      t:n1 TIMES u:n2 
+                {: RESULT = n1 * n2; :}
+                |  t:n1 DIV u:n2 
+                {: RESULT = n1 / n2; :}
+                | u:n1
+                {: RESULT = n1; :}
+                ;
+
+u       ::=     MINUS e:n1
+                {: RESULT =  -n1; :}
+                | e:n1
+                {: RESULT = n1; :}
+                ;
+
+e       ::=     ENTERO:n1
+                {: RESULT = n1; :}
+                | LPAREN s:n1 RPAREN
+                {: RESULT = n1; :}
+                ;
