@@ -107,7 +107,7 @@ terminal String COLOR, NAMEW;
 terminal BOARD, POSY, POSX, BOXES, TYPE, TARGETS, PLAYER;
 /*OPERATORS*/
 terminal POINTS, COMMA, LPAREN, RPAREN, PLUS, MINUS, TIMES, DIV, ERROR;
-terminal AP, LCORCH, RCORCH, LKEY, RKEY;
+terminal AP, LCORCH, RCORCH, LKEY, RKEY, POINT, FLOOR, CEIL;
 /*peticion a worlds*/
 terminal WORLDS, WORLD; 
 /*NUMERO*/
@@ -294,6 +294,12 @@ u       ::=     MINUS e:n1
 
 e       ::=     ENTERO:n1
                 {: RESULT = n1; :}
+                | ENTERO:n4 POINT ENTERO
+                {: RESULT = n4;  :}
                 | LPAREN s:n1 RPAREN
                 {: RESULT = n1; :}
+                | FLOOR LPAREN s:n2 RPAREN
+                {: RESULT = n2; :}
+                | CEIL LPAREN s:n3 RPAREN
+                {: RESULT = n3+1; :}
                 ;

@@ -24,11 +24,9 @@ public class PlayActivity : AppCompatActivity() {
         val btnReturnMain : Button = findViewById<Button>(R.id.btnReturnMain)
         val drawLayout: FrameLayout = findViewById(R.id.flDrawLayout)
 
-        val container = FigureContainer(ArrayList<Figure>())
+        val container = ConexionSocket.getWorld()
         val panel = DrawPanel(this, container)
         drawLayout.addView(panel)
-
-        println(ConexionSocket.getWorld().toString())
 
 
         //Return MainActivity

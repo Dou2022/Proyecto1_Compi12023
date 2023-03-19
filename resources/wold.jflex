@@ -39,8 +39,8 @@ Name =  ([a-z] | "_" )( [a-z] | [A-Z] ) ([a-z] | [A-Z] | [0-9])+
 
 <YYINITIAL> {
 	
-	"\""						{return symbol(AP, yytext());	}
-	"all"						{return symbol(ALL, yytext());	}
+	"\""						{return symbol(AP, yytext());	}/*commillas que encierra a las palabras claves*/
+	"all"						{return symbol(ALL, yytext());	} /*Llama a los mundos guardados*/
 	/* kerwords */
 	/*NAME - ROWS - COLS*/
 	"name"		                { return symbol(NAME, yytext()); } /*nombre del mundo*/
@@ -64,17 +64,18 @@ Name =  ([a-z] | "_" )( [a-z] | [A-Z] ) ([a-z] | [A-Z] | [0-9])+
 	"posY"			            { return symbol(POSY, yytext()); } /*posicion en Y*/
     "boxes"                     { return symbol(BOXES, yytext()); } /*caja*/
     "type"                      { return symbol(TYPE, yytext());  } /*tipo */
-	"BRICK"						{ return symbol(BRICK, yytext());	}
-	"HALL"						{ return symbol(HALL, yytext()); }
+	"BRICK"						{ return symbol(BRICK, yytext());	} /*Muro*/
+	"HALL"						{ return symbol(HALL, yytext()); }		/*Camino*/
     "targets"                   { return symbol(TARGETS, yytext()); } /*almacenamiento*/
     "player"                    { return symbol(PLAYER, yytext()); }
 
 	/*peticiones de wolds*/
-	"worlds"					{return symbol(WORLDS,yytext());	}
-	"world"						{return symbol(WORLD, yytext());	}
+	"worlds"					{return symbol(WORLDS,yytext());	}/*Encierra a varios mundos*/
+	"world"						{return symbol(WORLD, yytext());	}/*encierra aun solo mundo*/
 
 	/* signs and operators */
 	":"			{ return symbol( POINTS, yytext()); }
+	"."			{ return symbol( POINT, yytext()); }
 	","			{ return symbol( COMMA, yytext());  }
 	"("			{ return symbol( LPAREN, yytext()); }
 	")"			{ return symbol( RPAREN, yytext()); }
@@ -86,6 +87,10 @@ Name =  ([a-z] | "_" )( [a-z] | [A-Z] ) ([a-z] | [A-Z] | [0-9])+
 	"-"			{ return symbol( MINUS, yytext());  }
 	"*"			{ return symbol( TIMES, yytext());  }
 	"/"			{ return symbol( DIV, yytext());    }
+	"FLOOR"		{ return symbol( FLOOR, yytext());  }
+	"CEIL"		{ return symbol( CEIL, yytext());   }
+	
+	
 
 	/*Name*/
 	{Name}			{ 	//imprimir(String.valueOf(yytext()));	
